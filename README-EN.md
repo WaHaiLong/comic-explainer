@@ -19,6 +19,7 @@ Result: **perfectly sharp CJK text, every sentence editable in one line of code,
 ## Live demos
 
 - 🏠 [The Gatekeeper 192.168.10.1](https://wahailong.github.io/comic-explainer/examples/network-gatekeeper.html) — "what is a router" as a little-town story (zh)
+- 🤖 [Bit Learns to Cook · Self-Improving Agents](https://wahailong.github.io/comic-explainer/examples/cs329a-self-improving-agents.html) — Stanford CS329A told as a cooking-and-food-critic story (zh)
 - 🧑 [Character drawing sampler](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) — chibi cast & style limits (zh)
 
 Download `examples/*.html` and open in any browser — fully offline.
