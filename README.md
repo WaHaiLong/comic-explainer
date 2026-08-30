@@ -33,7 +33,7 @@
 
 - ▶ [第 2 话 · 标准版 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) —— 分镜逐格推拉镜头 + 旁白配音 + BGM，浏览器点击即播
 - ▶ [第 2 话 · 评书腔版 128s](https://wahailong.github.io/comic-explainer/videos/ep2-pingshu-style.mp4) —— 单口评书体文案，结论先行+自问自答+职场化隐喻，男声快语速
-- ▶ [第 2 话 · 沉浸版 134s](https://wahailong.github.io/comic-explainer/videos/ep2-immersive-storyteller.mp4) —— 黑底大字开场卡 + 全程黄字大字幕 + 大嗓门配音 + BGM
+- ▶ [第 2 话 · 沉浸版 166s](https://wahailong.github.io/comic-explainer/videos/ep2-immersive-storyteller.mp4) —— 黑底大字开场卡 + 全程黄字大字幕 + edge-tts 云健激情腔 + BGM
 - 整条管线已沉淀为下游技能 **comic-to-video**，见 [`video-pipeline/SKILL.md`](video-pipeline/SKILL.md)（含音色静音坑、concat 滤镜防音画漂移、无 libass 时的透明 PNG 字幕方案、本地 BGM 合成兜底）
 
 ## 快速上手（3 步）
@@ -86,7 +86,7 @@ comic-explainer/
 └── videos/
     ├── ep2-how-internet-enters-home.mp4   # 第 2 话 · 标准版 72s
     ├── ep2-pingshu-style.mp4              # 第 2 话 · 评书腔版 128s
-    └── ep2-immersive-storyteller.mp4      # 第 2 话 · 沉浸版 134s（大字幕）
+    └── ep2-immersive-storyteller.mp4      # 第 2 话 · 沉浸版 166s（大字幕）
 ```
 
 ## 能力边界（诚实版）

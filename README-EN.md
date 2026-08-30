@@ -29,7 +29,7 @@ Download `examples/*.html` and open in any browser — fully offline.
 
 - ▶ [Ep.2 · Standard, 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) — panel camera moves, Chinese narration, BGM; click to play
 - ▶ [Ep.2 · Storyteller style, 128s](https://wahailong.github.io/comic-explainer/videos/ep2-pingshu-style.mp4) — single male storyteller, fast-paced pingshu rhetoric (zh)
-- ▶ [Ep.2 · Immersive cut, 134s](https://wahailong.github.io/comic-explainer/videos/ep2-immersive-storyteller.mp4) — black title cards, burned-in yellow subtitles, boosted VO (zh)
+- ▶ [Ep.2 · Immersive cut, 166s](https://wahailong.github.io/comic-explainer/videos/ep2-immersive-storyteller.mp4) — black title cards, burned-in yellow subtitles, edge-tts Yunjian narrator (zh)
 - The whole pipeline is captured as the companion skill **comic-to-video** → [`video-pipeline/SKILL.md`](video-pipeline/SKILL.md) (silent-voice gotcha, concat-filter A/V sync fix, transparent-PNG subtitles when libass is missing, local BGM fallback)
 
 ## Quick start (3 steps)
