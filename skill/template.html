@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{主标题}} · {{副标题}}</title>
+<style>
+  /* ===== 设计 token：换主题基本不用动 ===== */
+  :root{
+    --ink:#2b2622;      /* 墨线 */
+    --paper:#f7f1e3;    /* 纸底 */
+    --panel:#fffdf6;    /* 分镜底 */
+    --accent:#e8542f;   /* 强调红 */
+    --blue:#2f6fe8;     /* 强调蓝 */
+    --yellow:#ffd94a;   /* 漫画黄 */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 20% 10%, #efe6d0 0 40%, transparent 60%),
+      radial-gradient(circle at 80% 90%, #ece2c8 0 40%, transparent 60%),
+      var(--paper);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+    color:var(--ink); line-height:1.6;
+  }
+  .comic{max-width:860px; margin:0 auto; padding:28px 16px 80px;}
+  /* ===== 封面 ===== */
+  header.cover{
+    text-align:center; padding:46px 18px 34px; border:4px solid var(--ink);
+    background:var(--yellow); border-radius:14px;
+    box-shadow:8px 8px 0 rgba(43,38,34,.85);
+    margin-bottom:34px; position:relative; overflow:hidden;
+  }
+  header.cover h1{font-size:clamp(28px,5.5vw,44px); letter-spacing:2px;}
+  header.cover h1 .num{color:var(--accent); font-family:ui-monospace,Menlo,monospace;}
+  header.cover p.sub{margin-top:10px; font-size:15px; opacity:.8;}
+  header.cover .stripe{
+    position:absolute; top:-30px; right:-60px; width:220px; height:90px;
+    background:repeating-linear-gradient(45deg,var(--ink) 0 12px,transparent 12px 24px);
+    transform:rotate(-24deg); opacity:.18;
+  }
+  /* ===== 分镜格 ===== */
+  .panel{
+    position:relative; border:3.5px solid var(--ink); border-radius:12px;
+    background:var(--panel); margin:30px 0 0; overflow:hidden;
+    box-shadow:6px 6px 0 rgba(43,38,34,.75);
+  }
+  .ptag{
+    position:absolute; top:0; left:0; z-index:5;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:700;
+    padding:5px 14px 6px; border-radius:9px 0 12px 0; letter-spacing:1px;
+  }
+  .ptitle{
+    position:absolute; z-index:5; top:34px; left:14px;
+    font-size:clamp(18px,3.4vw,26px); font-weight:900; letter-spacing:1px;
+    text-shadow:2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+  }
+  .scene{display:block; width:100%; height:auto;}
+  /* ===== 对话框 / 旁白 / 拟声词 ===== */
+  .bub{
+    position:absolute; z-index:6; max-width:44%;
+    background:#fff; border:2.6px solid var(--ink); border-radius:16px;
+    padding:9px 13px; font-size:clamp(12px,1.9vw,15.5px); font-weight:600;
+    box-shadow:3px 3px 0 rgba(43,38,34,.25);
+  }
+  .bub::after{
+    content:""; position:absolute; bottom:-14px; left:26px;
+    border:8px solid transparent; border-top:14px solid var(--ink);
+  }
+  .bub.tail-r::after{left:auto; right:26px;}
+  .bub.tail-b::after{bottom:auto; top:-14px; border-top:8px solid transparent; border-bottom:14px solid var(--ink);}
+  .bub .hl{color:var(--accent);}
+  .bub .bl{color:var(--blue);}
+  .narr{
+    position:absolute; z-index:6; left:14px; right:14px; bottom:12px;
+    background:var(--ink); color:#fdf7e8; font-size:clamp(12px,2vw,15px);
+    padding:8px 14px; border-radius:6px; font-weight:600;
+  }
+  .narr b{color:var(--yellow);}
+  .sfx{
+    position:absolute; z-index:6; font-weight:900; font-style:italic;
+    color:var(--accent); text-shadow:2px 2px 0 #fff;
+    transform:rotate(-8deg); letter-spacing:1px;
+  }
+  /* ===== 结尾干货框 ===== */
+  .factbox{
+    margin:34px 4px 0; border:3px dashed var(--ink); border-radius:12px;
+    background:#eaf2ff; padding:16px 18px;
+  }
+  .factbox h3{font-size:16px; margin-bottom:6px; color:var(--blue);}
+  .factbox li{margin-left:1.2em; font-size:14px;}
+  footer{text-align:center; margin-top:48px; font-size:13px; opacity:.65;}
+</style>
+</head>
+<body>
+<div class="comic">
+
+  <!-- ================= 封面 ================= -->
+  <header class="cover">
+    <div class="stripe"></div>
+    <p style="font-size:14px;letter-spacing:3px;opacity:.7;">{{系列名}} · 第 {{N}} 话</p>
+    <h1>{{主角名}} <span class="num">{{核心关键词}}</span></h1>
+    <p class="sub">{{一句话副标题}}</p>
+  </header>
+
+  <!-- ================= 分镜格模板：复制这一段换内容 =================
+       结构 = ptag(页码) + ptitle(标题) + svg.scene(画面) + .bub(对话) + .narr(旁白) [+ .sfx(拟声词)]
+       SVG 统一 viewBox="0 0 860 4x0"（宽 860 固定，高按内容 400~460）
+  -->
+  <section class="panel">
+    <span class="ptag">P.1</span>
+    <span class="ptitle">{{这一幕的标题}}</span>
+    <svg class="scene" viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="{{场景描述}}">
+      <rect width="860" height="420" fill="#f2ead6"/>
+      <!-- 在此画场景：角色配方见 reference.md -->
+      <g transform="translate(368,180)">
+        <!-- 示例：基础机器人/路由器角色 -->
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="16" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="108" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="0" r="4" fill="#e8542f"/><circle cx="108" cy="0" r="4" fill="#e8542f"/>
+        <circle cx="46" cy="52" r="5.5" fill="#2b2622"/><circle cx="78" cy="52" r="5.5" fill="#2b2622"/>
+        <path d="M50 68 Q62 76 74 68" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+      </g>
+      <!-- SVG 里只放短标签文字（角色名/按钮），整句对话放 .bub -->
+      <text x="430" y="386" text-anchor="middle" font-size="14" font-weight="900">{{主角名}}</text>
+    </svg>
+    <div class="bub" style="top:110px; left:60px;">
+      {{对话框内容，可用 <span class="hl">红色强调</span> 和 <b>黑色加粗</b>}}
+    </div>
+    <div class="narr">{{旁白：黑底白字，讲设定或点破知识点}}<b>{{强调词}}</b></div>
+  </section>
+
+  <!-- 复制上面 <section class="panel"> 若干次：建议 5~7 幕 -->
+  <!-- 收束格建议用决策框/口诀格；最后一幕后可加 .sfx 拟声词 -->
+
+  <div class="factbox">
+    <h3>📌 本页知识清单</h3>
+    <ul>
+      <li>{{干货条目 1}}</li>
+      <li>{{干货条目 2}}</li>
+      <li>{{干货条目 3}}</li>
+    </ul>
+  </div>
+
+  <footer>—— {{系列名}} · 根据 {{真实事件/日期，可选}} 改编 ——</footer>
+</div>
+</body>
+</html>
