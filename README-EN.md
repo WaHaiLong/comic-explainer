@@ -22,9 +22,13 @@ Result: **perfectly sharp CJK text, every sentence editable in one line of code,
 - 🌐 [How the Internet Gets Home](https://wahailong.github.io/comic-explainer/examples/how-internet-enters-home.html) — home-network series ep.2: ISP datacenter → fiber → ONT → PPPoE → router (zh)
 - 🤖 [Bit Learns to Cook · Self-Improving Agents](https://wahailong.github.io/comic-explainer/examples/cs329a-self-improving-agents.html) — agent series: Stanford CS329A told as a cooking-and-food-critic story (zh)
 - 🧑 [Character drawing sampler](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) — chibi cast & style limits (zh)
-- 🧑 [Character drawing sampler](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) — chibi cast & style limits (zh)
 
 Download `examples/*.html` and open in any browser — fully offline.
+
+### 📺 Video (dynamic comic)
+
+- ▶ [Ep.2 "How the Internet Gets Home", 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) — panel-by-panel camera moves, 5 Chinese character voices, BGM; click to play in browser
+- Pipeline: comic HTML → headless Chrome screenshots → macOS `say` per-character dubbing → ffmpeg zoompan assembly & audio mix (1080p/30fps, ~22 MB)
 
 ## Quick start (3 steps)
 

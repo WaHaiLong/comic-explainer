@@ -26,9 +26,13 @@
 - 🌐 [网是怎么进你家的](https://wahailong.github.io/comic-explainer/examples/how-internet-enters-home.html) —— 家庭网络系列 · 第 2 话：机房→光纤→光猫→拨号→路由器的全链路
 - 🤖 [小比特学做菜 · 自我进化 Agent](https://wahailong.github.io/comic-explainer/examples/cs329a-self-improving-agents.html) —— 自我进化 Agent 系列 · 把斯坦福 CS329A 讲成「做菜与美食评委」的故事
 - 🧑 [画人能力小样](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) —— Q 版人物图鉴与画风边界自检
-- 🧑 [画人能力小样](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) —— Q 版人物图鉴与画风边界自检
 
 （也可直接下载 `examples/*.html` 本地用浏览器打开，完全离线可用。）
+
+### 📺 视频版（动态漫）
+
+- ▶ [第 2 话《网是怎么进你家的》72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) —— 分镜逐格推拉镜头 + 五音色分角色中文配音 + BGM，浏览器点击即播
+- 制作管线：漫画 HTML → Chrome 无头逐格截图 → macOS `say` 分角色配音 → ffmpeg zoompan 运镜拼接混音（1080p/30fps，约 22MB）
 
 ## 快速上手（3 步）
 
@@ -70,11 +74,13 @@ comic-explainer/
 │   ├── SKILL.md                # 工作流：分镜→绘制→校验→交付
 │   ├── template.html           # 页面骨架（起手就拷它）
 │   └── reference.md            # SVG 素材配方库 + 标签闭合校验脚本
-└── examples/
-    ├── network-gatekeeper.html       # 家庭网络 · 第 1 话：路由器 192.168.10.1
-    ├── how-internet-enters-home.html # 家庭网络 · 第 2 话：网是怎么进你家的
-    ├── cs329a-self-improving-agents.html # 自我进化 Agent · 小比特学做菜
-    └── human-drawing-demo.html       # 画人能力小样
+├── examples/
+│   ├── network-gatekeeper.html       # 家庭网络 · 第 1 话：路由器 192.168.10.1
+│   ├── how-internet-enters-home.html # 家庭网络 · 第 2 话：网是怎么进你家的
+│   ├── cs329a-self-improving-agents.html # 自我进化 Agent · 小比特学做菜
+│   └── human-drawing-demo.html       # 画人能力小样
+└── videos/
+    └── ep2-how-internet-enters-home.mp4  # 第 2 话动态漫视频（1080p · 72s · 分角色配音）
 ```
 
 ## 能力边界（诚实版）
