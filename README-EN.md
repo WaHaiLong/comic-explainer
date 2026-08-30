@@ -18,8 +18,10 @@ Result: **perfectly sharp CJK text, every sentence editable in one line of code,
 
 ## Live demos
 
-- 🏠 [The Gatekeeper 192.168.10.1](https://wahailong.github.io/comic-explainer/examples/network-gatekeeper.html) — "what is a router" as a little-town story (zh)
-- 🤖 [Bit Learns to Cook · Self-Improving Agents](https://wahailong.github.io/comic-explainer/examples/cs329a-self-improving-agents.html) — Stanford CS329A told as a cooking-and-food-critic story (zh)
+- 🏠 [The Gatekeeper 192.168.10.1](https://wahailong.github.io/comic-explainer/examples/network-gatekeeper.html) — home-network series ep.1: "what is a router" as a little-town story (zh)
+- 🌐 [How the Internet Gets Home](https://wahailong.github.io/comic-explainer/examples/how-internet-enters-home.html) — home-network series ep.2: ISP datacenter → fiber → ONT → PPPoE → router (zh)
+- 🤖 [Bit Learns to Cook · Self-Improving Agents](https://wahailong.github.io/comic-explainer/examples/cs329a-self-improving-agents.html) — agent series: Stanford CS329A told as a cooking-and-food-critic story (zh)
+- 🧑 [Character drawing sampler](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) — chibi cast & style limits (zh)
 - 🧑 [Character drawing sampler](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) — chibi cast & style limits (zh)
 
 Download `examples/*.html` and open in any browser — fully offline.
