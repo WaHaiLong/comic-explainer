@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小比特学做菜 · 自我进化 Agent</title>
+<style>
+  :root{
+    --ink:#2b2622; --paper:#f7f1e3; --panel:#fffdf6;
+    --accent:#e8542f; --blue:#2f6fe8; --yellow:#ffd94a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 20% 10%, #efe6d0 0 40%, transparent 60%),
+      radial-gradient(circle at 80% 90%, #ece2c8 0 40%, transparent 60%),
+      var(--paper);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+    color:var(--ink); line-height:1.6;
+  }
+  .comic{max-width:860px; margin:0 auto; padding:28px 16px 80px;}
+  header.cover{
+    text-align:center; padding:46px 18px 34px; border:4px solid var(--ink);
+    background:var(--yellow); border-radius:14px;
+    box-shadow:8px 8px 0 rgba(43,38,34,.85);
+    margin-bottom:34px; position:relative; overflow:hidden;
+  }
+  header.cover h1{font-size:clamp(28px,5.5vw,44px); letter-spacing:2px;}
+  header.cover h1 .num{color:var(--accent); font-family:ui-monospace,Menlo,monospace;}
+  header.cover p.sub{margin-top:10px; font-size:15px; opacity:.85;}
+  header.cover .stripe{
+    position:absolute; top:-30px; right:-60px; width:220px; height:90px;
+    background:repeating-linear-gradient(45deg,var(--ink) 0 12px,transparent 12px 24px);
+    transform:rotate(-24deg); opacity:.18;
+  }
+  .panel{
+    position:relative; border:3.5px solid var(--ink); border-radius:12px;
+    background:var(--panel); margin:30px 0 0; overflow:hidden;
+    box-shadow:6px 6px 0 rgba(43,38,34,.75);
+  }
+  .ptag{
+    position:absolute; top:0; left:0; z-index:5;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:700;
+    padding:5px 14px 6px; border-radius:9px 0 12px 0; letter-spacing:1px;
+  }
+  .ptitle{
+    position:absolute; z-index:5; top:34px; left:14px;
+    font-size:clamp(18px,3.4vw,26px); font-weight:900; letter-spacing:1px;
+    text-shadow:2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+  }
+  .scene{display:block; width:100%; height:auto;}
+  .bub{
+    position:absolute; z-index:6; max-width:44%;
+    background:#fff; border:2.6px solid var(--ink); border-radius:16px;
+    padding:9px 13px; font-size:clamp(12px,1.9vw,15.5px); font-weight:600;
+    box-shadow:3px 3px 0 rgba(43,38,34,.25);
+  }
+  .bub::after{
+    content:""; position:absolute; bottom:-14px; left:26px;
+    border:8px solid transparent; border-top:14px solid var(--ink);
+  }
+  .bub.tail-r::after{left:auto; right:26px;}
+  .bub.tail-b::after{bottom:auto; top:-14px; border-top:8px solid transparent; border-bottom:14px solid var(--ink);}
+  .bub .hl{color:var(--accent);}
+  .bub .bl{color:var(--blue);}
+  .narr{
+    position:absolute; z-index:6; left:14px; right:14px; bottom:12px;
+    background:var(--ink); color:#fdf7e8; font-size:clamp(12px,2vw,15px);
+    padding:8px 14px; border-radius:6px; font-weight:600;
+  }
+  .narr b{color:var(--yellow);}
+  .sfx{
+    position:absolute; z-index:6; font-weight:900; font-style:italic;
+    color:var(--accent); text-shadow:2px 2px 0 #fff;
+    transform:rotate(-8deg); letter-spacing:1px;
+  }
+  .factbox{
+    margin:34px 4px 0; border:3px dashed var(--ink); border-radius:12px;
+    background:#eaf2ff; padding:16px 18px;
+  }
+  .factbox h3{font-size:16px; margin-bottom:6px; color:var(--blue);}
+  .factbox li{margin-left:1.2em; font-size:14px;}
+  footer{text-align:center; margin-top:48px; font-size:13px; opacity:.65;}
+</style>
+</head>
+<body>
+<div class="comic">
+
+  <header class="cover">
+    <div class="stripe"></div>
+    <p style="font-size:14px;letter-spacing:3px;opacity:.7;">小比特学做菜 · 第 1 话</p>
+    <h1>自我进化 <span class="num">Agent</span></h1>
+    <p class="sub">斯坦福 CS329A《Self-Improving AI Agents》到底在教什么工程 · 漫画版</p>
+  </header>
+
+  <!-- ===== P.1 全景：生成便宜 ===== -->
+  <section class="panel">
+    <span class="ptag">P.1</span>
+    <span class="ptitle">后厨里的一万道菜</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="小机器人站在一堆盘子前">
+      <rect width="860" height="440" fill="#f2ead6"/>
+      <line x1="0" y1="360" x2="860" y2="360" stroke="#2b2622" stroke-width="4"/>
+      <!-- 盘子山 -->
+      <g transform="translate(150,330)"><ellipse cx="0" cy="0" rx="46" ry="13" fill="#fff" stroke="#2b2622" stroke-width="3"/><path d="M-34 -2 A34 24 0 0 1 34 -2" fill="#ffd94a" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(110,300)"><ellipse cx="0" cy="0" rx="40" ry="11" fill="#fff" stroke="#2b2622" stroke-width="3"/><path d="M-30 -2 A30 21 0 0 1 30 -2" fill="#e8542f" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(185,295)"><ellipse cx="0" cy="0" rx="38" ry="10" fill="#fff" stroke="#2b2622" stroke-width="3"/><path d="M-28 -2 A28 20 0 0 1 28 -2" fill="#8fd6a0" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(150,262)"><ellipse cx="0" cy="0" rx="34" ry="9" fill="#fff" stroke="#2b2622" stroke-width="3"/><path d="M-25 -2 A25 18 0 0 1 25 -2" fill="#ffd94a" stroke="#2b2622" stroke-width="3"/></g>
+      <!-- 小比特（开心） -->
+      <g transform="translate(470,235)">
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="16" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="108" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="0" r="4" fill="#e8542f"/><circle cx="108" cy="0" r="4" fill="#e8542f"/>
+        <path d="M38 52 Q46 46 54 52" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M70 52 Q78 46 86 52" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M50 66 Q62 76 74 66" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+      </g>
+      <text x="532" y="330" text-anchor="middle" font-size="14" font-weight="900">小比特</text>
+    </svg>
+    <div class="bub" style="top:96px; left:40px;">
+      嘿嘿，我现在<span class="hl">一秒能做一万道菜</span>！
+    </div>
+    <div class="narr">这是「能造 AI」的时代——<b>生成答案（做菜）便宜到爆</b>。可问题来了：菜这么多，谁来尝一口、说这道对不对？</div>
+  </section>
+
+  <!-- ===== P.2 验证器=地基 ===== -->
+  <section class="panel">
+    <span class="ptag">P.2</span>
+    <span class="ptitle">美食评委 = 验证器</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="评委机器人给菜品打分">
+      <rect width="860" height="440" fill="#efe7d2"/>
+      <line x1="0" y1="368" x2="860" y2="368" stroke="#2b2622" stroke-width="4"/>
+      <!-- 小比特（冒汗） -->
+      <g transform="translate(120,240)">
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="16" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="108" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="0" r="4" fill="#e8542f"/><circle cx="108" cy="0" r="4" fill="#e8542f"/>
+        <circle cx="46" cy="52" r="5.5" fill="#2b2622"/><circle cx="78" cy="52" r="5.5" fill="#2b2622"/>
+        <path d="M48 70 Q56 64 62 70 Q68 76 74 70" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M126 34 q8 12 0 18 q-8 -6 0 -18" fill="#2f6fe8" stroke="#2b2622" stroke-width="2"/>
+      </g>
+      <!-- 评委机器人 -->
+      <g transform="translate(560,175)">
+        <rect x="0" y="20" width="112" height="126" rx="14" fill="#bfe3ea" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="56" y1="20" x2="56" y2="-8" stroke="#2b2622" stroke-width="4"/>
+        <circle cx="56" cy="-12" r="5" fill="#2f6fe8"/>
+        <circle cx="36" cy="54" r="10" fill="#fff" stroke="#2b2622" stroke-width="3"/>
+        <circle cx="36" cy="54" r="3" fill="#2b2622"/>
+        <circle cx="76" cy="54" r="5.5" fill="#2b2622"/>
+        <path d="M40 88 Q56 82 72 88" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <rect x="94" y="72" width="46" height="60" rx="4" fill="#fff" stroke="#2b2622" stroke-width="3" transform="rotate(10 94 72)"/>
+        <line x1="102" y1="90" x2="132" y2="96" stroke="#e53935" stroke-width="3"/>
+        <line x1="102" y1="104" x2="132" y2="110" stroke="#2b2622" stroke-width="2"/>
+      </g>
+      <text x="616" y="336" text-anchor="middle" font-size="14" font-weight="900">评委</text>
+      <!-- 红叉牌 -->
+      <g transform="translate(392,150)">
+        <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#ffe4d1" stroke="#2b2622" stroke-width="3.5"/>
+        <path d="M-14 -14 L14 14 M14 -14 L-14 14" stroke="#e53935" stroke-width="8" stroke-linecap="round"/>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:70px; right:40px;">
+      这道——<span class="hl">不合格</span>！
+    </div>
+    <div class="bub" style="top:250px; left:40px;">
+      啊？可我做了一万道了耶……
+    </div>
+    <span class="sfx" style="top:120px; left:400px; font-size:30px;">叮！</span>
+    <div class="narr">整门课的地基：<b>会做一万道不值钱，能自动尝出对错（验证器）才值钱</b>。硬验证器=跑测试/比对答案；软验证器=再叫个 AI 当评委（会偏心）。</div>
+  </section>
+
+  <!-- ===== P.3 推理时算力 ===== -->
+  <section class="panel">
+    <span class="ptag">P.3</span>
+    <span class="ptitle">分身海战术</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="许多小机器人同时答题，评委圈出正确的那个">
+      <rect width="860" height="440" fill="#f6efdd"/>
+      <!-- 难题锁 -->
+      <g transform="translate(400,40)">
+        <rect x="-40" y="0" width="80" height="58" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/>
+        <path d="M-22 0 v-16 a22 22 0 0 1 44 0 v16" fill="none" stroke="#2b2622" stroke-width="5"/>
+        <text x="0" y="40" text-anchor="middle" font-size="30" font-weight="900" fill="#2b2622">?</text>
+      </g>
+      <!-- 一次：错 -->
+      <g transform="translate(70,170)">
+        <rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="3"/>
+        <circle cx="28" cy="38" r="4" fill="#2b2622"/><circle cx="52" cy="38" r="4" fill="#2b2622"/>
+      </g>
+      <g transform="translate(120,150)"><path d="M0 0 L22 22 M22 0 L0 22" stroke="#e53935" stroke-width="7" stroke-linecap="round"/></g>
+      <!-- 分身群 -->
+      <g transform="translate(300,180)">
+        <g transform="scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(90,0) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(180,0) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(270,0) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(40,64) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(130,64) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(220,64) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+        <g transform="translate(310,64) scale(0.42)"><rect x="0" y="20" width="80" height="40" rx="9" fill="#ffe082" stroke="#2b2622" stroke-width="6"/><circle cx="28" cy="38" r="6" fill="#2b2622"/><circle cx="52" cy="38" r="6" fill="#2b2622"/></g>
+      </g>
+      <!-- 评委圈出对的那个 -->
+      <g transform="translate(560,240)">
+        <circle cx="30" cy="30" r="46" fill="none" stroke="#43a047" stroke-width="6" stroke-dasharray="10 8"/>
+        <path d="M14 30 L26 44 L50 12" stroke="#43a047" stroke-width="8" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:64px; right:36px;">
+      别慌，<span class="bl">把自己复制一万次</span>同时做！
+    </div>
+    <div class="bub tail-b" style="top:300px; left:600px;">
+      就这一份——<span class="hl">对！</span>
+    </div>
+    <div class="narr">同一道难题，让 <b>7B 小模型采样上万次 + 验证器挑对的那份</b>，覆盖率能反超「大模型只答一次」。小 × 很多次 × 验证器 &gt; 大 × 一次。</div>
+  </section>
+
+  <!-- ===== P.4 训练时 RL ===== -->
+  <section class="panel">
+    <span class="ptag">P.4</span>
+    <span class="ptitle">把招式练进肌肉</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="小比特在健身房把对招练进芯片">
+      <rect width="860" height="440" fill="#ece2c8"/>
+      <line x1="0" y1="368" x2="860" y2="368" stroke="#2b2622" stroke-width="4"/>
+      <!-- 杠铃（绿色勾做杠片） -->
+      <g transform="translate(430,150)">
+        <line x1="-120" y1="0" x2="120" y2="0" stroke="#2b2622" stroke-width="8" stroke-linecap="round"/>
+        <rect x="-150" y="-34" width="26" height="68" rx="5" fill="#43a047" stroke="#2b2622" stroke-width="3"/>
+        <rect x="124" y="-34" width="26" height="68" rx="5" fill="#43a047" stroke="#2b2622" stroke-width="3"/>
+        <path d="M-146 -12 L-138 0 L-124 -20" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M128 -12 L136 0 L150 -20" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- 小比特（用力，胸口发光芯片） -->
+      <g transform="translate(368,215)">
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="10" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="114" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="10" cy="4" r="4" fill="#e8542f"/><circle cx="114" cy="4" r="4" fill="#e8542f"/>
+        <path d="M40 50 L54 56 M54 50 L40 56" stroke="#2b2622" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M70 50 L84 56 M84 50 L70 56" stroke="#2b2622" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M50 70 Q62 64 74 70" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <rect x="48" y="60" width="28" height="16" rx="3" fill="#ffd94a" stroke="#e8542f" stroke-width="2.5"/>
+      </g>
+      <!-- 循环箭头 -->
+      <path d="M250 300 A120 90 0 0 0 610 300" fill="none" stroke="#2f6fe8" stroke-width="5" stroke-dasharray="10 8"/>
+      <path d="M610 300 l-16 -22 l34 2 z" fill="#2f6fe8"/>
+    </svg>
+    <div class="bub" style="top:70px; left:44px;">
+      把评委夸过的对招，<span class="hl">反复练</span>！
+    </div>
+    <div class="bub tail-r" style="top:290px; right:40px;">
+      练进<span class="bl">芯片</span>！
+    </div>
+    <div class="narr">推理时算力是「租的」，训练时扩展是「买的」：用验证器给轨迹打分，<b>强化学习把好做法固化进权重</b>（RLVR / STaR / GRPO）——从临时查攻略变成本能。</div>
+  </section>
+
+  <!-- ===== P.5 工具 + 记忆 ===== -->
+  <section class="panel">
+    <span class="ptag">P.5</span>
+    <span class="ptitle">装上手，也装上记性</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="小比特用锅铲炒糊的锅，背着食谱本">
+      <rect width="860" height="440" fill="#f2ead6"/>
+      <line x1="0" y1="372" x2="860" y2="372" stroke="#2b2622" stroke-width="4"/>
+      <!-- 炒锅冒烟 -->
+      <g transform="translate(250,300)">
+        <circle cx="0" cy="0" r="48" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/>
+        <circle cx="0" cy="0" r="30" fill="#90a4ae" stroke="#2b2622" stroke-width="2.5"/>
+        <line x1="46" y1="12" x2="128" y2="34" stroke="#2b2622" stroke-width="9" stroke-linecap="round"/>
+        <path d="M-6 -52 q12 -14 -2 -28 q-10 -12 6 -26" fill="none" stroke="#8d6e63" stroke-width="5" opacity="0.75"/>
+      </g>
+      <g transform="translate(250,250)"><text x="0" y="0" text-anchor="middle" font-size="26" font-weight="900" fill="#e53935">糊!</text></g>
+      <!-- 小比特（拿锅铲的手） -->
+      <g transform="translate(430,215)">
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="16" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="108" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="0" r="4" fill="#e8542f"/><circle cx="108" cy="0" r="4" fill="#e8542f"/>
+        <circle cx="46" cy="52" r="5.5" fill="#2b2622"/><circle cx="78" cy="52" r="5.5" fill="#2b2622"/>
+        <path d="M50 66 Q62 74 74 66" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <line x1="0" y1="60" x2="-70" y2="70" stroke="#2b2622" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <!-- 食谱本（记忆） -->
+      <g transform="translate(600,250)">
+        <rect x="0" y="0" width="104" height="76" rx="6" fill="#e8542f" stroke="#2b2622" stroke-width="3"/>
+        <rect x="12" y="0" width="9" height="76" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <line x1="36" y1="26" x2="88" y2="26" stroke="#fff" stroke-width="3"/>
+        <line x1="36" y1="42" x2="88" y2="42" stroke="#fff" stroke-width="3"/>
+        <line x1="36" y1="58" x2="70" y2="58" stroke="#fff" stroke-width="3"/>
+      </g>
+      <text x="652" y="344" text-anchor="middle" font-size="13" font-weight="900">食谱本</text>
+    </svg>
+    <div class="bub tail-r" style="top:66px; right:40px;">
+      有<span class="bl">工具</span>和<span class="bl">记忆</span>，才炒得动大菜！
+    </div>
+    <div class="narr">给模型装手（调用工具 / 跑测试）和记性（记忆管理）。妙处在于——<b>锅糊了会冒烟报警：反馈来自真实世界</b>，不是模型自说自话。</div>
+  </section>
+
+  <!-- ===== P.6 规划编排 ===== -->
+  <section class="panel">
+    <span class="ptag">P.6</span>
+    <span class="ptitle">别放养，搭条流水线</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="带评委关卡的台阶，从被牵线到自主行走">
+      <rect width="860" height="440" fill="#efe7d2"/>
+      <!-- 台阶 -->
+      <g>
+        <rect x="120" y="330" width="150" height="46" fill="#e6ccb2" stroke="#2b2622" stroke-width="3"/>
+        <rect x="300" y="280" width="150" height="96" fill="#e6ccb2" stroke="#2b2622" stroke-width="3"/>
+        <rect x="480" y="230" width="150" height="146" fill="#e6ccb2" stroke="#2b2622" stroke-width="3"/>
+        <rect x="660" y="180" width="150" height="196" fill="#e6ccb2" stroke="#2b2622" stroke-width="3"/>
+      </g>
+      <!-- 关卡（评委章） -->
+      <g transform="translate(375,250)"><circle cx="0" cy="0" r="20" fill="#43a047" stroke="#2b2622" stroke-width="3"/><path d="M-9 0 L-2 8 L11 -8" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round"/></g>
+      <g transform="translate(555,200)"><circle cx="0" cy="0" r="20" fill="#43a047" stroke="#2b2622" stroke-width="3"/><path d="M-9 0 L-2 8 L11 -8" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round"/></g>
+      <g transform="translate(735,150)"><circle cx="0" cy="0" r="20" fill="#43a047" stroke="#2b2622" stroke-width="3"/><path d="M-9 0 L-2 8 L11 -8" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round"/></g>
+      <!-- 被牵线的小比特（左） -->
+      <g transform="translate(150,250)">
+        <line x1="62" y1="0" x2="62" y2="-70" stroke="#2b2622" stroke-width="2" stroke-dasharray="5 5"/>
+        <line x1="40" y1="4" x2="20" y2="-70" stroke="#2b2622" stroke-width="2" stroke-dasharray="5 5"/>
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <circle cx="46" cy="52" r="5.5" fill="#2b2622"/><circle cx="78" cy="52" r="5.5" fill="#2b2622"/>
+        <path d="M50 68 Q62 76 74 68" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+      </g>
+      <text x="212" y="180" text-anchor="middle" font-size="13" font-weight="900">先固定流程</text>
+      <!-- 自主行走的小比特（右） -->
+      <g transform="translate(690,110)">
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="16" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="108" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="0" r="4" fill="#e8542f"/><circle cx="108" cy="0" r="4" fill="#e8542f"/>
+        <path d="M38 52 Q46 46 54 52" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M70 52 Q78 46 86 52" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M50 66 Q62 76 74 66" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+      </g>
+      <text x="752" y="100" text-anchor="middle" font-size="13" font-weight="900">再放权</text>
+    </svg>
+    <div class="narr">生产级 Agent 的可靠性不靠「更自主」，而靠<b>受控流程：先手搭固定 pipeline、每步设验证关卡，再一点点放权</b>。放养=误差累积。</div>
+  </section>
+
+  <!-- ===== P.7 特别篇：软件工程 ===== -->
+  <section class="panel">
+    <span class="ptag">P.7</span>
+    <span class="ptitle">今日特别篇 · 最先跑通的厨房 = 写代码</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="代码砖块迁移、git倒带、单元测试打勾">
+      <rect width="860" height="440" fill="#f6efdd"/>
+      <!-- 代码砖墙（迁移） -->
+      <g transform="translate(90,200)">
+        <rect x="0" y="0" width="72" height="34" fill="#ffd94a" stroke="#2b2622" stroke-width="3"/>
+        <rect x="76" y="0" width="72" height="34" fill="#8fd6a0" stroke="#2b2622" stroke-width="3"/>
+        <rect x="38" y="38" width="72" height="34" fill="#bfe3ea" stroke="#2b2622" stroke-width="3"/>
+        <text x="36" y="24" font-size="16" font-weight="900">&lt;/&gt;</text>
+      </g>
+      <path d="M280 220 H360 M344 206 L360 220 L344 234" stroke="#e8542f" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <g transform="translate(380,190)">
+        <rect x="0" y="0" width="72" height="34" fill="#ffd94a" stroke="#2b2622" stroke-width="3"/>
+        <rect x="76" y="0" width="72" height="34" fill="#8fd6a0" stroke="#2b2622" stroke-width="3"/>
+        <rect x="38" y="38" width="72" height="34" fill="#bfe3ea" stroke="#2b2622" stroke-width="3"/>
+      </g>
+      <!-- git 倒带 -->
+      <g transform="translate(600,150)">
+        <path d="M70 40 A46 46 0 1 1 40 96" fill="none" stroke="#2f6fe8" stroke-width="7"/>
+        <path d="M40 96 l-8 -26 l30 6 z" fill="#2f6fe8"/>
+        <text x="60" y="58" text-anchor="middle" font-size="20" font-weight="900" fill="#2f6fe8">git</text>
+      </g>
+      <!-- 单元测试清单 -->
+      <g transform="translate(120,300)">
+        <rect x="0" y="0" width="180" height="96" rx="8" fill="#fff" stroke="#2b2622" stroke-width="3"/>
+        <g transform="translate(20,26)"><path d="M0 8 L6 15 L18 -2" stroke="#43a047" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+        <g transform="translate(20,52)"><path d="M0 8 L6 15 L18 -2" stroke="#43a047" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+        <g transform="translate(20,78)"><path d="M0 8 L6 15 L18 -2" stroke="#43a047" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+        <line x1="48" y1="30" x2="160" y2="30" stroke="#2b2622" stroke-width="3"/>
+        <line x1="48" y1="56" x2="160" y2="56" stroke="#2b2622" stroke-width="3"/>
+        <line x1="48" y1="82" x2="140" y2="82" stroke="#2b2622" stroke-width="3"/>
+      </g>
+      <text x="210" y="416" text-anchor="middle" font-size="13" font-weight="900">单元测试 = 现成验证器</text>
+    </svg>
+    <div class="narr">代码天生满足全部条件：<b>单测=现成验证器、git=能倒带、报错=秒级反馈</b>。大厂真买单的活：代码迁移 / 补测试 / 数据清洗。</div>
+  </section>
+
+  <!-- ===== P.8 口诀收束 ===== -->
+  <section class="panel">
+    <span class="ptag">P.8</span>
+    <span class="ptitle">一句话心法</span>
+    <svg class="scene" viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="决策框：这一步对错谁来判">
+      <rect width="860" height="440" fill="#ece2c8"/>
+      <!-- 顶部问题框 -->
+      <rect x="250" y="30" width="360" height="60" rx="10" fill="#fff" stroke="#2b2622" stroke-width="3.5"/>
+      <text x="430" y="68" text-anchor="middle" font-size="16" font-weight="900">这一步的对错，谁来判？</text>
+      <!-- 分支线 -->
+      <path d="M430 90 V120 M430 120 H230 M430 120 H630 M230 120 V150 M630 120 V150" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+      <!-- 绿分支 -->
+      <rect x="90" y="150" width="280" height="120" rx="10" fill="#e2f2dc" stroke="#43a047" stroke-width="3.5"/>
+      <text x="230" y="184" text-anchor="middle" font-size="15" font-weight="900" fill="#2e7d32">有廉价验证器</text>
+      <text x="230" y="214" text-anchor="middle" font-size="13.5" font-weight="700">→ 交给 Agent 闭环</text>
+      <text x="230" y="238" text-anchor="middle" font-size="13.5" font-weight="700">自进化（采样/编排/RL）</text>
+      <!-- 红分支 -->
+      <rect x="490" y="150" width="280" height="120" rx="10" fill="#ffe4d1" stroke="#e53935" stroke-width="3.5"/>
+      <text x="630" y="184" text-anchor="middle" font-size="15" font-weight="900" fill="#c62828">只能人肉尝</text>
+      <text x="630" y="214" text-anchor="middle" font-size="13.5" font-weight="700">→ 目前先当助手</text>
+      <text x="630" y="238" text-anchor="middle" font-size="13.5" font-weight="700">先解决「怎么自动判」</text>
+      <!-- 底部小比特 -->
+      <g transform="translate(368,300)">
+        <rect x="0" y="30" width="124" height="60" rx="12" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="24" y1="30" x2="16" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="100" y1="30" x2="108" y2="2" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="0" r="4" fill="#e8542f"/><circle cx="108" cy="0" r="4" fill="#e8542f"/>
+        <path d="M38 52 Q46 46 54 52" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M70 52 Q78 46 86 52" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+        <path d="M50 66 Q62 76 74 66" stroke="#2b2622" stroke-width="3.5" fill="none"/>
+      </g>
+    </svg>
+    <div class="narr">记住这一句，就记住了 CS329A：<b>生成便宜，稀缺的是「不靠人也能自动判定对错」</b>。</div>
+  </section>
+
+  <div class="factbox">
+    <h3>📌 本页知识清单 · CS329A 的 8 个工程模块</h3>
+    <ul>
+      <li>① 验证器（地基）：硬=测试/比对，软=LLM 当裁判，弱验证器集成投票。</li>
+      <li>② 推理时算力：多采样 + 验证器挑优，小模型也能盖过大模型单次。</li>
+      <li>③ 训练时 RL：RLVR / STaR / GRPO，把验证器筛过的好轨迹固化进权重。</li>
+      <li>④ 工具 / 代码 / 记忆：ReAct 想-做交替、执行反馈、记忆管理。</li>
+      <li>⑤ 规划编排：受控流程 &gt; 放养，每步设关卡，再逐步放权。</li>
+      <li>⑥ 评测：回归测试集 + 自动评分器；前沿=AI Scientist / AlphaEvolve 式自我进化。</li>
+      <li>⑦ 落地首选：软件工程 Agent（单测=验证器、git=可回滚）。</li>
+      <li>精读顺序：第 2→3→6→7→13 讲。检查语：这一步对错谁来判、成本多少？</li>
+    </ul>
+  </div>
+
+  <footer>—— 小比特学做菜 · 根据斯坦福 CS329A《Self-Improving AI Agents》(Autumn 2025) 改编 ——</footer>
+</div>
+</body>
+</html>
