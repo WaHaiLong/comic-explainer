@@ -1,0 +1,39 @@
+examples:
+  - id: comic-to-motion-video
+    title:
+      zh: 漫画转动态漫视频
+      en: Comic to Motion Video
+    description:
+      zh: 把已有漫画 HTML 变成带配音运镜字幕的 MP4
+      en: Turn an existing comic HTML into a narrated MP4 with camera moves and subtitles
+    prompt:
+      zh: |-
+        把这份漫画做成动态漫视频：{{漫画 HTML 路径}}
+        配音风格：{{标准播报/评书腔/分角色}}，要字幕和 BGM，输出 1080p MP4。
+      en: |-
+        Turn this comic into a motion-comic video: {{comic HTML path}}
+        Narration style: {{standard/storyteller/per-character}}, with subtitles and BGM, output 1080p MP4.
+  - id: release-pack
+    title:
+      zh: 生成平台发布包
+      en: Build Platform Release Pack
+    description:
+      zh: 为成片产出 B站/YouTube 封面、章节轴与双平台文案
+      en: Produce covers, chapter timeline and bilingual copy for Bilibili/YouTube
+    prompt:
+      zh: |-
+        给成片 {{视频路径}} 做发布包：B站+YouTube 封面、标题、简介、标签、章节时间轴，标注 AI 语音申报项。
+      en: |-
+        Build a release pack for {{video path}}: Bilibili + YouTube covers, titles, descriptions, tags and chapter timeline, with AI-voice disclosure notes.
+  - id: full-pipeline
+    title:
+      zh: 漫画到发布一条龙
+      en: Comic-to-Publish Pipeline
+    description:
+      zh: 从漫画 HTML 一路做到成片+发布包并推仓库
+      en: From comic HTML all the way to final video, release pack and repo push
+    prompt:
+      zh: |-
+        主题 {{主题}}：先按 comic-explainer 出漫画，再转动态漫视频（{{配音风格}}），最后打包发布素材并推送到 {{仓库地址}}。
+      en: |-
+        Topic {{topic}}: create the comic with comic-explainer, render a motion-comic video ({{narration style}}), then package release assets and push to {{repo URL}}.

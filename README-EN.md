@@ -29,7 +29,8 @@ Download `examples/*.html` and open in any browser — fully offline.
 
 - ▶ [Ep.2 · Standard, 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) — panel camera moves, Chinese narration, BGM; click to play
 - ▶ [Ep.2 · Storyteller style, 128s](https://wahailong.github.io/comic-explainer/videos/ep2-pingshu-style.mp4) — single male storyteller, fast-paced pingshu rhetoric (zh)
-- Pipeline: comic HTML → headless Chrome screenshots → macOS `say` dubbing → ffmpeg zoompan assembly & audio mix (1080p/30fps)
+- ▶ [Ep.2 · Immersive cut, 134s](https://wahailong.github.io/comic-explainer/videos/ep2-immersive-storyteller.mp4) — black title cards, burned-in yellow subtitles, boosted VO (zh)
+- The whole pipeline is captured as the companion skill **comic-to-video** → [`video-pipeline/SKILL.md`](video-pipeline/SKILL.md) (silent-voice gotcha, concat-filter A/V sync fix, transparent-PNG subtitles when libass is missing, local BGM fallback)
 
 ## Quick start (3 steps)
 
@@ -55,7 +56,7 @@ Download `examples/*.html` and open in any browser — fully offline.
 
 ## For AI agents
 
-`skill/` is also a standard Agent Skill (SKILL.md + template + recipe book). Drop the folder into your agent's skills directory (QwenWork, Claude Code, etc.) and just say *"explain Docker as a comic"* — consistent style, recurring characters, sequels supported.
+`skill/` is also a standard Agent Skill (SKILL.md + template + recipe book). Drop the folder into your agent's skills directory (QwenWork, Claude Code, etc.) and just say *"explain Docker as a comic"* — consistent style, recurring characters, sequels supported. Downstream, `video-pipeline/` turns any finished comic HTML into a subtitled, dubbed motion-comic MP4 plus a Bilibili/YouTube release pack — say *"turn the comic into a video"*.
 
 ## Honest limits
 
