@@ -27,8 +27,9 @@ Download `examples/*.html` and open in any browser — fully offline.
 
 ### 📺 Video (dynamic comic)
 
-- ▶ [Ep.2 "How the Internet Gets Home", 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) — panel-by-panel camera moves, 5 Chinese character voices, BGM; click to play in browser
-- Pipeline: comic HTML → headless Chrome screenshots → macOS `say` per-character dubbing → ffmpeg zoompan assembly & audio mix (1080p/30fps, ~22 MB)
+- ▶ [Ep.2 · Standard, 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) — panel camera moves, Chinese narration, BGM; click to play
+- ▶ [Ep.2 · Storyteller style, 128s](https://wahailong.github.io/comic-explainer/videos/ep2-pingshu-style.mp4) — single male storyteller, fast-paced pingshu rhetoric (zh)
+- Pipeline: comic HTML → headless Chrome screenshots → macOS `say` dubbing → ffmpeg zoompan assembly & audio mix (1080p/30fps)
 
 ## Quick start (3 steps)
 

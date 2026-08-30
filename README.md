@@ -31,8 +31,9 @@
 
 ### 📺 视频版（动态漫）
 
-- ▶ [第 2 话《网是怎么进你家的》72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) —— 分镜逐格推拉镜头 + 五音色分角色中文配音 + BGM，浏览器点击即播
-- 制作管线：漫画 HTML → Chrome 无头逐格截图 → macOS `say` 分角色配音 → ffmpeg zoompan 运镜拼接混音（1080p/30fps，约 22MB）
+- ▶ [第 2 话 · 标准版 72s](https://wahailong.github.io/comic-explainer/videos/ep2-how-internet-enters-home.mp4) —— 分镜逐格推拉镜头 + 旁白配音 + BGM，浏览器点击即播
+- ▶ [第 2 话 · 评书腔版 128s](https://wahailong.github.io/comic-explainer/videos/ep2-pingshu-style.mp4) —— 单口评书体文案，结论先行+自问自答+职场化隐喻，男声快语速
+- 制作管线：漫画 HTML → Chrome 无头逐格截图 → macOS `say` 分角色配音 → ffmpeg zoompan 运镜拼接混音（1080p/30fps）
 
 ## 快速上手（3 步）
 
