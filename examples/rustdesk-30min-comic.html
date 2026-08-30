@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RustDesk 深度 30 分钟 · 动态漫画</title>
+<style>
+:root{--ink:#2b2622;--paper:#f7f1e3;--panel:#fffdf6;--accent:#e8542f;--blue:#2f6fe8;--yellow:#ffd94a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:radial-gradient(circle at 20% 10%,#efe6d0 0 40%,transparent 60%),
+ radial-gradient(circle at 80% 90%,#ece2c8 0 40%,transparent 60%),var(--paper);
+ font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+ color:var(--ink);line-height:1.6;}
+.comic{max-width:860px;margin:0 auto;padding:28px 16px 80px;}
+header.cover{text-align:center;padding:46px 18px 34px;border:4px solid var(--ink);
+ background:var(--yellow);border-radius:14px;box-shadow:8px 8px 0 rgba(43,38,34,.85);
+ margin-bottom:34px;position:relative;overflow:hidden;}
+header.cover h1{font-size:clamp(28px,5.5vw,44px);letter-spacing:2px;}
+header.cover h1 .num{color:var(--accent);font-family:ui-monospace,Menlo,monospace;}
+header.cover p.sub{margin-top:10px;font-size:15px;opacity:.8;}
+header.cover .stripe{position:absolute;top:-30px;right:-60px;width:220px;height:90px;opacity:.18;
+ background:repeating-linear-gradient(45deg,var(--ink) 0 12px,transparent 12px 24px);transform:rotate(-24deg);}
+.panel{position:relative;border:3.5px solid var(--ink);border-radius:12px;background:var(--panel);
+ margin:30px 0 0;overflow:hidden;box-shadow:6px 6px 0 rgba(43,38,34,.75);}
+.ptag{position:absolute;top:0;left:0;z-index:5;background:var(--ink);color:#fff;font-size:13px;
+ font-weight:700;padding:5px 14px 6px;border-radius:9px 0 12px 0;letter-spacing:1px;}
+.ptitle{position:absolute;z-index:5;top:34px;left:14px;font-size:clamp(18px,3.4vw,26px);font-weight:900;
+ letter-spacing:1px;text-shadow:2px 2px 0 #fff,-2px -2px 0 #fff,2px -2px 0 #fff,-2px 2px 0 #fff;}
+.scene{display:block;width:100%;height:auto;}
+.bub{position:absolute;z-index:6;max-width:44%;background:#fff;border:2.6px solid var(--ink);
+ border-radius:16px;padding:9px 13px;font-size:clamp(12px,1.9vw,15.5px);font-weight:600;
+ box-shadow:3px 3px 0 rgba(43,38,34,.25);}
+.bub::after{content:"";position:absolute;bottom:-14px;left:26px;border:8px solid transparent;border-top:14px solid var(--ink);}
+.bub.tail-r::after{left:auto;right:26px;}
+.bub .hl{color:var(--accent);} .bub .bl{color:var(--blue);}
+.narr{position:absolute;z-index:6;left:14px;right:14px;bottom:12px;background:var(--ink);color:#fdf7e8;
+ font-size:clamp(12px,2vw,15px);padding:8px 14px;border-radius:6px;font-weight:600;}
+.narr b{color:var(--yellow);}
+.factbox{margin:34px 4px 0;border:3px dashed var(--ink);border-radius:12px;background:#eaf2ff;padding:16px 18px;}
+.factbox h3{font-size:16px;margin-bottom:6px;color:var(--blue);} .factbox li{margin-left:1.2em;font-size:14px;}
+footer{text-align:center;margin-top:48px;font-size:13px;opacity:.65;}
+/* HTML 卡片类面板 */
+.cardwrap{height:430px;display:flex;flex-direction:column;justify-content:center;padding:64px 40px 66px;gap:10px;}
+.ct{font-size:22px;font-weight:900;letter-spacing:1px;border-bottom:3px solid var(--ink);
+ padding-bottom:8px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.ct .dot{width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);flex:0 0 auto;}
+table.cmp{width:100%;border-collapse:collapse;font-size:15.5px;background:#fff;border:3px solid var(--ink);border-radius:10px;overflow:hidden;}
+table.cmp th{background:var(--yellow);border:2.5px solid var(--ink);padding:8px 12px;font-size:15.5px;}
+table.cmp td{border:2px solid var(--ink);padding:8px 12px;font-weight:600;}
+table.cmp tr:nth-child(even) td{background:#faf5e6;}
+ul.biglist{list-style:none;display:flex;flex-direction:column;gap:9px;}
+ul.biglist li{display:flex;align-items:center;gap:12px;font-size:16.5px;font-weight:700;background:#fff;
+ border:2.5px solid var(--ink);border-radius:10px;padding:8px 14px;box-shadow:3px 3px 0 rgba(43,38,34,.2);}
+ul.biglist li .n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;
+ display:flex;align-items:center;justify-content:center;font-size:14px;border:2.5px solid var(--ink);}
+.terminal{background:#20242b;color:#d5e2d0;border:3.5px solid var(--ink);border-radius:12px;
+ padding:16px 20px;font-family:ui-monospace,Menlo,monospace;font-size:14.5px;line-height:1.9;box-shadow:4px 4px 0 rgba(43,38,34,.4);}
+.terminal .c{color:#7f8c98;}
+.flowrow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:nowrap;}
+.flowbox{background:#fff;border:3px solid var(--ink);border-radius:10px;padding:12px 10px;font-size:14.5px;
+ font-weight:800;text-align:center;box-shadow:4px 4px 0 rgba(43,38,34,.3);flex:1;}
+.flowarrow{color:var(--accent);font-size:22px;font-weight:900;flex:0 0 auto;}
+.tl{display:flex;gap:8px;}
+.tlitem{flex:1;text-align:center;position:relative;padding-top:26px;}
+.tlitem::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:16px;height:16px;
+ border-radius:50%;background:var(--accent);border:3px solid var(--ink);}
+.tl::before{content:"";position:absolute;top:15px;left:6%;right:6%;height:4px;background:var(--ink);border-radius:2px;}
+.tlwrap{position:relative;}
+.tlyear{font-weight:900;font-size:15px;color:var(--accent);}
+.tltext{font-size:12.8px;font-weight:700;line-height:1.45;margin-top:2px;}
+.bigcard{text-align:center;}
+.bigcard .huge{font-size:72px;font-weight:900;color:var(--accent);letter-spacing:2px;
+ text-shadow:3px 3px 0 var(--yellow);}
+.bigcard .lab{font-size:22px;font-weight:900;margin-top:6px;}
+.bigcard .sub2{font-size:14.5px;opacity:.75;margin-top:8px;}
+</style></head>
+<body><div class="comic">
+
+  <header class="cover">
+    <div class="stripe"></div>
+    <p style="font-size:14px;letter-spacing:3px;opacity:.7;">开源软件底细系列 · 第 1 话 · 完整版</p>
+    <h1>RustDesk <span class="num">底细大揭秘</span></h1>
+    <p class="sub">30 分钟深度版：原理 · 架构 · 自建 · 安全 · 商业 · 横评 · 实战</p>
+  </header>
+
+  <section class="panel">
+    <span class="ptag">P.1</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 01 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">开场</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">30 分钟，把 RustDesk 彻底讲透</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.2</span>
+    <span class="ptitle">RustDesk</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">老朋友，又见面了！</div>
+    <div class="narr">上期三分钟讲了个轮廓，这期一口气三十分钟，从里到外扒个底朝天。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.3</span>
+    <span class="ptitle">上期三句话回顾</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>上期三句话回顾</div><ul class="biglist"><li><span class="n">1</span>开源是脸面，公司在新加坡</li><li><span class="n">2</span>代码免费用，钱从省心和授权来</li><li><span class="n">3</span>大概率自力更生，没拿大投资</li></ul></div>
+    
+    <div class="narr">先把上期结论摆出来，忘了的朋友三秒捡回来。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.4</span>
+    <span class="ptitle">今天的十二站路线图</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>今天的十二站路线图</div><ul class="biglist"><li><span class="n">1</span>原理 · 架构 · 历史</li><li><span class="n">2</span>自建 · 安全 · 商业</li><li><span class="n">3</span>盈利融资 · 竞品横评</li><li><span class="n">4</span>实战案例 · 选购建议</li></ul></div>
+    
+    <div class="narr">十二站覆盖一个软件的生老病死，听完你就是这条街最懂 RustDesk 的人。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.5</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 02 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">远程控制在网上怎么走</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">ID · 信令 · 打洞 · 中继</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.6</span>
+    <span class="ptitle">先补课</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">两台电脑怎么相认？</div>
+    <div class="narr">第一站补课：两台隔着千山万水的机器，是怎么互相看到屏幕的。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.7</span>
+    <span class="ptitle">ID 服务器 hbbs</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(575,110)"><rect width="110" height="150" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/><circle cx="24" cy="34" r="6" fill="#43a047"/><circle cx="24" cy="70" r="6" fill="#e53935"/><circle cx="24" cy="106" r="6" fill="#43a047"/><line x1="44" y1="34" x2="92" y2="34" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="70" x2="92" y2="70" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="106" x2="92" y2="106" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">报上名来！</div>
+    <div class="narr">装上客户端联网那一刻，它就向 ID 服务器报到，换回一个九位数字门牌。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.8</span>
+    <span class="ptitle">一次连接的四步舞</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>一次连接的四步舞</div><div class="flowrow"><div class="flowbox">主控喊 ID</div><div class="flowarrow">➜</div><div class="flowbox">ID 服务器问路</div><div class="flowarrow">➜</div><div class="flowbox">路由器打洞</div><div class="flowarrow">➜</div><div class="flowbox">直连 或 中继</div></div></div>
+    
+    <div class="narr">主控输入 ID，先去服务器问路，再由两边路由器尝试打洞牵手。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.9</span>
+    <span class="ptitle">中继服务器 hbbr</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(560,110)"><circle cx="100" cy="70" r="62" fill="#dbe9ff" stroke="#2b2622" stroke-width="3.5"/><ellipse cx="100" cy="70" rx="28" ry="62" fill="none" stroke="#2f6fe8" stroke-width="3"/><line x1="38" y1="70" x2="162" y2="70" stroke="#2f6fe8" stroke-width="3"/><path d="M50 38 Q100 58 150 38" fill="none" stroke="#2f6fe8" stroke-width="3"/><path d="M50 102 Q100 82 150 102" fill="none" stroke="#2f6fe8" stroke-width="3"/></g><line x1="330" y1="180" x2="545" y2="175" stroke="#2f6fe8" stroke-width="4" stroke-dasharray="10 8"/>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="6" fill="#2b2622"/><circle cx="82" cy="50" r="6" fill="#2b2622"/><line x1="44" y1="38" x2="62" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><line x1="92" y1="38" x2="74" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><ellipse cx="68" cy="70" rx="9" ry="11" fill="#2b2622"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">打不通？我来转交！</div>
+    <div class="narr">对称型网络打洞必败，流量只能绕中继服务器转发，慢但能用。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.10</span>
+    <span class="ptitle">直连 vs 中继</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>直连 vs 中继</div><table class="cmp"><tr><th></th><th>直连 P2P</th><th>中继 Relay</th></tr><tr><td>延迟</td><td>最低</td><td>多一跳</td></tr><tr><td>隐私</td><td>不经过任何服务器</td><td>全部流经中继</td></tr><tr><td>带宽</td><td>只吃两边宽带</td><td>还吃服务器带宽</td></tr><tr><td>前提</td><td>网络环境友好</td><td>几乎总能用</td></tr></table></div>
+    
+    <div class="narr">直连中继一张表看清，记住能直连绝不中继。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.11</span>
+    <span class="ptitle">常用端口速记</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>常用端口速记</div><ul class="biglist"><li><span class="n">1</span>21116 · ID/信令（TCP+UDP）</li><li><span class="n">2</span>21117 · 中继 hbbr</li><li><span class="n">3</span>21118 · IP 直连访问</li><li><span class="n">4</span>21115/21119 · 辅助与网页端</li></ul></div>
+    
+    <div class="narr">端口背下来，后面自建和实战全靠它们。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.12</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 03 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">从 0 到十万星</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">一部开源远控发家史</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.13</span>
+    <span class="ptitle">历史站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">它怎么火起来的？</div>
+    <div class="narr">一个开源项目，五年攒下十几万颗星，靠的不是运气，是一股怨气。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.14</span>
+    
+    <div class="cardwrap"><div class="ct"><span class="dot"></span></div><div class="tlwrap"><div class="tl"><div class="tlitem"><div class="tlyear">2020</div><div class="tltext">项目首发，主打免费·开源·自建</div></div><div class="tlitem"><div class="tlyear">2021</div><div class="tltext">海外社区爆红，星标起飞</div></div><div class="tlitem"><div class="tlyear">2022</div><div class="tltext">界面用 Flutter 重写，六端统一</div></div><div class="tlitem"><div class="tlyear">2023</div><div class="tltext">大版本更新，也遇滥用风波</div></div><div class="tlitem"><div class="tlyear">2024</div><div class="tltext">官方默认服务器落位欧洲</div></div><div class="tlitem"><div class="tlyear">2026</div><div class="tltext">星标破十万，稳坐赛道头牌</div></div></div></div></div>
+    
+    <div class="narr">六年时间线，出生即踩中风口。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.15</span>
+    <span class="ptitle">风口哪来的</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(575,105)"><circle cx="65" cy="75" r="62" fill="#ffd94a" stroke="#2b2622" stroke-width="4"/><text x="65" y="100" text-anchor="middle" font-size="64" font-weight="900" fill="#c23a15">¥</text></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">同行衬托得好！</div>
+    <div class="narr">老牌远控又贵又爱识别商用，国产的广告又多，用户的怨气全成了它的流量。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.16</span>
+    
+    <div class="cardwrap"><div class="ct"><span class="dot"></span></div><div class="bigcard"><div class="huge">100K+</div><div class="lab">GitHub Stars</div><div class="sub2">开源远控赛道的事实第一</div></div></div>
+    
+    <div class="narr">十万颗星，开源远控赛道的事实第一名。但星多不等于钱多，第八站细说。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.17</span>
+    <span class="ptitle">冒名风波</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(570,95)"><path d="M70 0 L140 26 V86 Q140 138 70 160 V0 Z" fill="#e1f0ff" stroke="#2b2622" stroke-width="4"/><path d="M46 84 L64 102 L98 60" stroke="#43a047" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="6" fill="#2b2622"/><circle cx="82" cy="50" r="6" fill="#2b2622"/><line x1="44" y1="38" x2="62" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><line x1="92" y1="38" x2="74" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><ellipse cx="68" cy="70" rx="9" ry="11" fill="#2b2622"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">认准官网下载！</div>
+    <div class="narr">人红是非多：有诈骗团伙冒充客服诱导安装来路不明的包，官方反复辟谣。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.18</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 04 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">拆开看：它用什么写的</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">Rust · Flutter · 自研协议</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.19</span>
+    <span class="ptitle">架构站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">拆开看看！</div>
+    <div class="narr">第三站拆机器：客户端、服务端、协议，分别是什么做的。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.20</span>
+    <span class="ptitle">技术栈一览</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>技术栈一览</div><table class="cmp"><tr><th>部件</th><th>技术</th><th>说明</th></tr><tr><td>客户端</td><td>Rust + Flutter</td><td>逻辑 Rust，界面跨六端</td></tr><tr><td>服务端</td><td>hbbs / hbbr</td><td>两个轻量 Rust 服务</td></tr><tr><td>协议</td><td>自研</td><td>握手加密自成一套</td></tr><tr><td>平台</td><td>六端覆盖</td><td>Win/Mac/Linux/安卓/iOS/Web</td></tr></table></div>
+    
+    <div class="narr">技术栈一张表：底层全是 Rust，界面一套代码六端通用。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.21</span>
+    <span class="ptitle">为什么选 Rust</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">又快又安全</div>
+    <div class="narr">图三样：性能贴系统、内存安全、单文件到处跑。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.22</span>
+    <span class="ptitle">一次连接的五步握手</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>一次连接的五步握手</div><div class="flowrow"><div class="flowbox">报 ID</div><div class="flowarrow">➜</div><div class="flowbox">探测网络</div><div class="flowarrow">➜</div><div class="flowbox">尝试打洞</div><div class="flowarrow">➜</div><div class="flowbox">协商密钥</div><div class="flowarrow">➜</div><div class="flowbox">加密会话</div></div></div>
+    
+    <div class="narr">握手五步，成了直连，不成转中继，加密一样不少。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.23</span>
+    <span class="ptitle">加密与校验</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>加密与校验</div><ul class="biglist"><li><span class="n">1</span>传输全程加密（默认开启）</li><li><span class="n">2</span>自建可生成服务器密钥对</li><li><span class="n">3</span>客户端校验 key，防中间人</li><li><span class="n">4</span>可设置强制加密连接</li></ul></div>
+    
+    <div class="narr">安全两层：默认加密保底，密钥校验防偷听。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.24</span>
+    <span class="ptitle">六端同源</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f2ead6"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">修一处，全家好！</div>
+    <div class="narr">界面框架重写最大的红利：一套代码六个平台，修一个漏洞全端生效。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.25</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 05 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">自建服务器实战</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">hbbs + hbbr 两条命令</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.26</span>
+    <span class="ptitle">自建站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(575,110)"><rect width="110" height="150" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/><circle cx="24" cy="34" r="6" fill="#43a047"/><circle cx="24" cy="70" r="6" fill="#e53935"/><circle cx="24" cy="106" r="6" fill="#43a047"/><line x1="44" y1="34" x2="92" y2="34" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="70" x2="92" y2="70" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="106" x2="92" y2="106" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">王牌来了！</div>
+    <div class="narr">第四站自建服务器，这是 RustDesk 和所有对手拉开差距的王牌。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.27</span>
+    <span class="ptitle">两条命令部署</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>两条命令部署</div><div class="terminal"><div>$ docker run -d --name hbbs --net=host \\</div><div>    rustdesk/rustdesk-server hbbs</div><div>$ docker run -d --name hbbr --net=host \\</div><div>    rustdesk/rustdesk-server hbbr</div><div># 客户端填服务器地址 + 公钥 key，完事</div></div></div>
+    
+    <div class="narr">Docker 两条命令：一个容器管报到，一个管中继。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.28</span>
+    <span class="ptitle">你需要准备什么</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>你需要准备什么</div><ul class="biglist"><li><span class="n">1</span>一台有公网 IP 的 VPS（最低配即可）</li><li><span class="n">2</span>放行 TCP 21115-21119 与 UDP 21116</li><li><span class="n">3</span>域名可选，直填 IP 也行</li><li><span class="n">4</span>中继流量大时留意带宽</li></ul></div>
+    
+    <div class="narr">门槛极低：轻量服务器加几个端口。唯一要盯的是带宽账单。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.29</span>
+    <span class="ptitle">官方托管 vs 自建</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>官方托管 vs 自建</div><table class="cmp"><tr><th></th><th>官方托管</th><th>自建</th></tr><tr><td>成本</td><td>订阅费（月付）</td><td>VPS 几块钱/月</td></tr><tr><td>隐私</td><td>数据过官方服务器</td><td>数据全在自己手里</td></tr><tr><td>维护</td><td>零维护</td><td>自己管升级备份</td></tr><tr><td>定制客户端</td><td>付费</td><td>同样付费</td></tr></table></div>
+    
+    <div class="narr">要省心付钱给官方，要隐私动手自建，两条路都通。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.30</span>
+    <span class="ptitle">新手三大坑</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(575,110)"><rect width="110" height="150" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/><circle cx="24" cy="34" r="6" fill="#43a047"/><circle cx="24" cy="70" r="6" fill="#e53935"/><circle cx="24" cy="106" r="6" fill="#43a047"/><line x1="44" y1="34" x2="92" y2="34" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="70" x2="92" y2="70" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="106" x2="92" y2="106" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="6" fill="#2b2622"/><circle cx="82" cy="50" r="6" fill="#2b2622"/><line x1="44" y1="38" x2="62" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><line x1="92" y1="38" x2="74" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><ellipse cx="68" cy="70" rx="9" ry="11" fill="#2b2622"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">端口！密钥！UDP！</div>
+    <div class="narr">端口没放全、客户端 key 没配对、漏放 UDP 21116 导致永远走中继。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.31</span>
+    <span class="ptitle">更狠的玩法</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(560,110)"><circle cx="100" cy="70" r="62" fill="#dbe9ff" stroke="#2b2622" stroke-width="3.5"/><ellipse cx="100" cy="70" rx="28" ry="62" fill="none" stroke="#2f6fe8" stroke-width="3"/><line x1="38" y1="70" x2="162" y2="70" stroke="#2f6fe8" stroke-width="3"/><path d="M50 38 Q100 58 150 38" fill="none" stroke="#2f6fe8" stroke-width="3"/><path d="M50 102 Q100 82 150 102" fill="none" stroke="#2f6fe8" stroke-width="3"/></g><line x1="330" y1="180" x2="545" y2="175" stroke="#2f6fe8" stroke-width="4" stroke-dasharray="10 8"/>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">连服务器都省了</div>
+    <div class="narr">局域网同一 WiFi 下可以 IP 直连，信令服务器都不要，实战站细讲。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.32</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 06 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">安全与争议</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">工具无罪，人心难防</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.33</span>
+    <span class="ptitle">安全站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(570,95)"><path d="M70 0 L140 26 V86 Q140 138 70 160 V0 Z" fill="#e1f0ff" stroke="#2b2622" stroke-width="4"/><path d="M46 84 L64 102 L98 60" stroke="#43a047" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">双刃剑出鞘</div>
+    <div class="narr">第五站聊安全。远控软件天生长着黑客工具的形状，争议全从这来。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.34</span>
+    <span class="ptitle">滥用风波</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(570,95)"><path d="M70 0 L140 26 V86 Q140 138 70 160 V0 Z" fill="#e1f0ff" stroke="#2b2622" stroke-width="4"/><path d="M46 84 L64 102 L98 60" stroke="#43a047" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="6" fill="#2b2622"/><circle cx="82" cy="50" r="6" fill="#2b2622"/><line x1="44" y1="38" x2="62" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><line x1="92" y1="38" x2="74" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><ellipse cx="68" cy="70" rx="9" ry="11" fill="#2b2622"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">冒充客服的骗局</div>
+    <div class="narr">有诈骗团伙冒充客服诱导安装远控，转走受害者存款，官方随后加强防滥用提示。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.35</span>
+    <span class="ptitle">使用红线（背下来）</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>使用红线（背下来）</div><ul class="biglist"><li><span class="n">1</span>陌生人要求远程协助＝按诈骗处理</li><li><span class="n">2</span>无人值守用强密码或一次一换</li><li><span class="n">3</span>不用时退出登录，别门户大开</li><li><span class="n">4</span>企业部署加白名单与审计</li></ul></div>
+    
+    <div class="narr">远控等于交出整台电脑，红线一条都不能破。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.36</span>
+    <span class="ptitle">安装来源风险对照</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>安装来源风险对照</div><table class="cmp"><tr><th>来源</th><th>风险</th><th>建议</th></tr><tr><td>官网 / 官方仓库</td><td>低</td><td>放心用</td></tr><tr><td>不明链接发来的安装包</td><td>极高</td><td>一律拒绝</td></tr><tr><td>所谓破解版绿色版</td><td>极高</td><td>常带后门</td></tr><tr><td>长期不更新的旧版</td><td>中</td><td>及时升级</td></tr></table></div>
+    
+    <div class="narr">官方渠道绿色通行，来路不明全部拉黑。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.37</span>
+    <span class="ptitle">开源的意义</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">代码晒在阳光下</div>
+    <div class="narr">代码公开，全球眼睛盯着，漏洞公开修，这是比闭源黑盒更可验证的信任。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.38</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 07 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">钱从哪来</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">open-core 深拆</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.39</span>
+    <span class="ptitle">算钱站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(575,105)"><circle cx="65" cy="75" r="62" fill="#ffd94a" stroke="#2b2622" stroke-width="4"/><text x="65" y="100" text-anchor="middle" font-size="64" font-weight="900" fill="#c23a15">¥</text></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <text x="47" y="56" font-size="17" font-weight="900" fill="#2b7a34">$</text><text x="76" y="56" font-size="17" font-weight="900" fill="#2b7a34">$</text><path d="M54 68 Q68 80 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">拆到每个格子</div>
+    <div class="narr">第六站算钱。上期给了框架，这次拆到每个格子，连利润奶牛一起点名。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.40</span>
+    <span class="ptitle">免费区（AGPL 开源）</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>免费区（AGPL 开源）</div><ul class="biglist"><li><span class="n">1</span>客户端全功能 · 全平台</li><li><span class="n">2</span>自建 hbbs + hbbr 服务端</li><li><span class="n">3</span>局域网 IP 直连</li><li><span class="n">4</span>社区支持</li></ul></div>
+    
+    <div class="narr">免费区相当大方：全功能客户端加自建服务端，一分不收。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.41</span>
+    <span class="ptitle">付费档位表</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>付费档位表</div><table class="cmp"><tr><th>档位</th><th>参考价（月·年付）</th><th>买什么</th></tr><tr><td>个人版</td><td>约 $11.88 起</td><td>官方托管与基础功能</td></tr><tr><td>基础版</td><td>约 $23.88 起</td><td>团队管理入门</td></tr><tr><td>定制版</td><td>按用户/设备加购</td><td>集中管控</td></tr><tr><td>定制版V2</td><td>按并发加购</td><td>高级运维能力</td></tr></table></div>
+    
+    <div class="narr">付费四档：个人、基础、定制、定制V2，年付不自动续费。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.42</span>
+    <span class="ptitle">利润奶牛</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(575,105)"><circle cx="65" cy="75" r="62" fill="#ffd94a" stroke="#2b2622" stroke-width="4"/><text x="65" y="100" text-anchor="middle" font-size="64" font-weight="900" fill="#c23a15">¥</text></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <text x="47" y="56" font-size="17" font-weight="900" fill="#2b7a34">$</text><text x="76" y="56" font-size="17" font-weight="900" fill="#2b7a34">$</text><path d="M54 68 Q68 80 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">白牌要加钱！</div>
+    <div class="narr">最贵的是定制客户端生成器：换 logo、预置服务器、闭源分发，开源协议管不到的都得掏钱。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.43</span>
+    <span class="ptitle">定价心法</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">只收个零头</div>
+    <div class="narr">定价锚定老牌大厂：功能对齐价格砍到零头，专接被伤过心的用户。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.44</span>
+    <span class="ptitle">收入三支柱（推断）</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>收入三支柱（推断）</div><ul class="biglist"><li><span class="n">1</span>订阅：托管省心费</li><li><span class="n">2</span>授权：白牌闭源许可</li><li><span class="n">3</span>支持：企业级技术服务</li><li><span class="n">4</span>注意：自建党一分不掏</li></ul></div>
+    
+    <div class="narr">订阅、授权、支持三大支柱。反直觉的是：最忠诚的自建用户恰恰一分不掏。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.45</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 08 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">盈利与融资</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">能查的与查不到的</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.46</span>
+    <span class="ptitle">查账站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(575,110)"><rect width="110" height="150" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/><circle cx="24" cy="34" r="6" fill="#43a047"/><circle cx="24" cy="70" r="6" fill="#e53935"/><circle cx="24" cy="106" r="6" fill="#43a047"/><line x1="44" y1="34" x2="92" y2="34" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="70" x2="92" y2="70" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="106" x2="92" y2="106" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">这次翻遍角落</div>
+    <div class="narr">第七站查账。上期说查不到，这次把能查的公开角落全翻一遍。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.47</span>
+    <span class="ptitle">能查到的</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(575,110)"><rect width="110" height="150" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/><circle cx="24" cy="34" r="6" fill="#43a047"/><circle cx="24" cy="70" r="6" fill="#e53935"/><circle cx="24" cy="106" r="6" fill="#43a047"/><line x1="44" y1="34" x2="92" y2="34" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="70" x2="92" y2="70" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="106" x2="92" y2="106" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">只有骨架</div>
+    <div class="narr">新加坡注册处确认公司真实存在，成立时间对得上，年报私有。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.48</span>
+    
+    <div class="cardwrap"><div class="ct"><span class="dot"></span></div><div class="bigcard"><div class="huge">0 笔</div><div class="lab">公开 VC 融资记录</div><div class="sub2">基于公开数据库检索 · 未证实 ≠ 没有</div></div></div>
+    
+    <div class="narr">公开数据库翻不到任何一笔正规风险投资。严谨起见：未证实不等于没有。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.49</span>
+    <span class="ptitle">自力更生证据链</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(575,105)"><circle cx="65" cy="75" r="62" fill="#ffd94a" stroke="#2b2622" stroke-width="4"/><text x="65" y="100" text-anchor="middle" font-size="64" font-weight="900" fill="#c23a15">¥</text></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">没人催，才敢免费</div>
+    <div class="narr">没拿投资的假设反过来解释了它全部行为：敢永久免费核心、不烧钱买量、版本节奏稳。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.50</span>
+    <span class="ptitle">模式的天花板与风险</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>模式的天花板与风险</div><ul class="biglist"><li><span class="n">1</span>免费用户海量，付费转化低是通病</li><li><span class="n">2</span>公共中继带宽是刚性成本</li><li><span class="n">3</span>大厂下场做同类＝降维打击</li><li><span class="n">4</span>社区分叉分流已有先例</li></ul></div>
+    
+    <div class="narr">风险也摆上桌面：转化率低、带宽刚性、大厂威胁、分叉分流。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.51</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 09 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">远控江湖横评</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">五虎各占山头</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.52</span>
+    <span class="ptitle">横评站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f2ead6"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">武林大会开打</div>
+    <div class="narr">第八站横评。远控江湖五虎将，各占一个山头。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.53</span>
+    <span class="ptitle">五虎山头图</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>五虎山头图</div><table class="cmp"><tr><th>软件</th><th>定位</th><th>软肋</th></tr><tr><td>TeamViewer</td><td>企业级老大哥</td><td>贵，识别商用狠</td></tr><tr><td>AnyDesk</td><td>轻量全球线路</td><td>付费也不便宜</td></tr><tr><td>ToDesk</td><td>国内速度快</td><td>免费档限速</td></tr><tr><td>向日葵</td><td>国产硬件生态</td><td>广告与会员墙</td></tr><tr><td>RustDesk</td><td>自建与隐私</td><td>需要折腾</td></tr></table></div>
+    
+    <div class="narr">五虎定位一张表：老牌贵、AnyDesk 也不便宜、国产限速带广告、开源靠折腾。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.54</span>
+    <span class="ptitle">价格与隐私对照</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>价格与隐私对照</div><table class="cmp"><tr><th>方案</th><th>个人年成本</th><th>数据过谁</th></tr><tr><td>老牌商用版</td><td>数千元起</td><td>厂商服务器</td></tr><tr><td>国产会员</td><td>百元级</td><td>厂商服务器</td></tr><tr><td>RustDesk 托管</td><td>约千元级</td><td>官方服务器</td></tr><tr><td>RustDesk 自建</td><td>VPS 几十元</td><td>你自己的服务器</td></tr></table></div>
+    
+    <div class="narr">价格再叠一层隐私：传统方案数据全过厂商，自建只过你自己的机器。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.55</span>
+    <span class="ptitle">隐私的本质</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(560,110)"><circle cx="100" cy="70" r="62" fill="#dbe9ff" stroke="#2b2622" stroke-width="3.5"/><ellipse cx="100" cy="70" rx="28" ry="62" fill="none" stroke="#2f6fe8" stroke-width="3"/><line x1="38" y1="70" x2="162" y2="70" stroke="#2f6fe8" stroke-width="3"/><path d="M50 38 Q100 58 150 38" fill="none" stroke="#2f6fe8" stroke-width="3"/><path d="M50 102 Q100 82 150 102" fill="none" stroke="#2f6fe8" stroke-width="3"/></g><line x1="330" y1="180" x2="545" y2="175" stroke="#2f6fe8" stroke-width="4" stroke-dasharray="10 8"/>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">你信谁的机房？</div>
+    <div class="narr">选远控本质是选信任：愿不愿意让屏幕上的一切流经某家的机房。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.56</span>
+    <span class="ptitle">性能真相</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f2ead6"/>
+      <g transform="translate(560,110)"><circle cx="100" cy="70" r="62" fill="#dbe9ff" stroke="#2b2622" stroke-width="3.5"/><ellipse cx="100" cy="70" rx="28" ry="62" fill="none" stroke="#2f6fe8" stroke-width="3"/><line x1="38" y1="70" x2="162" y2="70" stroke="#2f6fe8" stroke-width="3"/><path d="M50 38 Q100 58 150 38" fill="none" stroke="#2f6fe8" stroke-width="3"/><path d="M50 102 Q100 82 150 102" fill="none" stroke="#2f6fe8" stroke-width="3"/></g><line x1="330" y1="180" x2="545" y2="175" stroke="#2f6fe8" stroke-width="4" stroke-dasharray="10 8"/>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="6" fill="#2b2622"/><circle cx="82" cy="50" r="6" fill="#2b2622"/><line x1="44" y1="38" x2="62" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><line x1="92" y1="38" x2="74" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><ellipse cx="68" cy="70" rx="9" ry="11" fill="#2b2622"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">卡不卡看路由</div>
+    <div class="narr">局域网大家都流畅；公网看中继离你多近。实测公共中继绕纽约两百多毫秒。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.57</span>
+    <span class="ptitle">怎么选（对号入座）</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>怎么选（对号入座）</div><ul class="biglist"><li><span class="n">1</span>折腾党/隐私敏感 → RustDesk 自建</li><li><span class="n">2</span>企业要合规审计 → 付费企业方案</li><li><span class="n">3</span>国内小白求省事 → 国产双雄</li><li><span class="n">4</span>偶尔帮爸妈修电脑 → 谁顺手用谁</li></ul></div>
+    
+    <div class="narr">四种人对号入座，别花冤枉钱。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.58</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 10 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">实战：我的三台机器</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">局域网直连全记录</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.59</span>
+    <span class="ptitle">实战站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ece2c8"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">上我自己的案例</div>
+    <div class="narr">第九站实战。一 Mac 两 Windows 的真实部署，两个大坑都替你们踩完了。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.60</span>
+    <span class="ptitle">当前阵型</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>当前阵型</div><div class="flowrow"><div class="flowbox">Mac 主控 ✅</div><div class="flowarrow">➜</div><div class="flowbox">Windows·158 已上线</div><div class="flowarrow">➜</div><div class="flowbox">Windows·114 待接入</div></div></div>
+    
+    <div class="narr">Mac 主控，158 已装好可被控，114 离线待命。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.61</span>
+    <span class="ptitle">坑一：纽约中继</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(560,110)"><circle cx="100" cy="70" r="62" fill="#dbe9ff" stroke="#2b2622" stroke-width="3.5"/><ellipse cx="100" cy="70" rx="28" ry="62" fill="none" stroke="#2f6fe8" stroke-width="3"/><line x1="38" y1="70" x2="162" y2="70" stroke="#2f6fe8" stroke-width="3"/><path d="M50 38 Q100 58 150 38" fill="none" stroke="#2f6fe8" stroke-width="3"/><path d="M50 102 Q100 82 150 102" fill="none" stroke="#2f6fe8" stroke-width="3"/></g><line x1="330" y1="180" x2="545" y2="175" stroke="#2f6fe8" stroke-width="4" stroke-dasharray="10 8"/>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="6" fill="#2b2622"/><circle cx="82" cy="50" r="6" fill="#2b2622"/><line x1="44" y1="38" x2="62" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><line x1="92" y1="38" x2="74" y2="44" stroke="#e8542f" stroke-width="4" stroke-linecap="round"/><ellipse cx="68" cy="70" rx="9" ry="11" fill="#2b2622"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">绕地球一圈</div>
+    <div class="narr">装完直呼卡顿，一查流量绕到纽约中继，两百多毫秒。同一屋檐下谈跨国恋。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.62</span>
+    <span class="ptitle">坑二：改配置不生效</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(575,110)"><rect width="110" height="150" rx="10" fill="#cfd8dc" stroke="#2b2622" stroke-width="3.5"/><circle cx="24" cy="34" r="6" fill="#43a047"/><circle cx="24" cy="70" r="6" fill="#e53935"/><circle cx="24" cy="106" r="6" fill="#43a047"/><line x1="44" y1="34" x2="92" y2="34" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="70" x2="92" y2="70" stroke="#2b2622" stroke-width="3"/><line x1="44" y1="106" x2="92" y2="106" stroke="#2b2622" stroke-width="3"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">要点那个「应用」</div>
+    <div class="narr">手改配置文件重启服务，直连死活不开。官方仓库才找到答案：必须图形界面点应用才算提交。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.63</span>
+    
+    <div class="cardwrap"><div class="ct"><span class="dot"></span></div><div class="bigcard"><div class="huge">&lt;10ms</div><div class="lab">直连后的局域网延迟</div><div class="sub2">丝滑得像坐在那台电脑前</div></div></div>
+    
+    <div class="narr">点完应用那一刻，延迟从两百多毫秒掉进个位数。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.64</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 11 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">该不该用</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">对号入座</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.65</span>
+    <span class="ptitle">建议站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#efe7d2"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="48" r="5.5" fill="#2b2622"/><circle cx="82" cy="48" r="5.5" fill="#2b2622"/><circle cx="56" cy="46" r="1.8" fill="#fff"/><circle cx="84" cy="46" r="1.8" fill="#fff"/><path d="M58 70 Q68 66 78 70" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">该不该上车？</div>
+    <div class="narr">第十站给建议。三种人三条路，别花冤枉钱。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.66</span>
+    <span class="ptitle">适合上车</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>适合上车</div><ul class="biglist"><li><span class="n">1</span>有服务器、爱折腾</li><li><span class="n">2</span>隐私敏感，不想数据过第三方</li><li><span class="n">3</span>设备多、平台杂</li><li><span class="n">4</span>预算为零但要求高</li></ul></div>
+    
+    <div class="narr">有服务器爱折腾的、隐私敏感的、设备又多又杂的，都是天选用户。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.67</span>
+    <span class="ptitle">不建议硬上</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>不建议硬上</div><ul class="biglist"><li><span class="n">1</span>纯小白怕折腾 → 国产双雄更省心</li><li><span class="n">2</span>企业要审计报告 → 正规付费方案</li><li><span class="n">3</span>只偶尔投个屏 → 系统自带够了</li></ul></div>
+    
+    <div class="narr">小白选国产双雄，企业买合规方案，偶尔投屏用系统自带。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.68</span>
+    <span class="ptitle">一句话总结</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f2ead6"/>
+      <g transform="translate(570,95)"><path d="M70 0 L140 26 V86 Q140 138 70 160 V0 Z" fill="#e1f0ff" stroke="#2b2622" stroke-width="4"/><path d="M46 84 L64 102 L98 60" stroke="#43a047" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">你信谁的机房？</div>
+    <div class="narr">远控的选择本质是选信任：愿把屏幕流经谁的服务器。想清楚这句，答案自现。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.69</span>
+    
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#ffd94a"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="#fffdf6" stroke="#2b2622" stroke-width="4"/>
+      <rect x="60" y="60" width="740" height="310" rx="18" fill="none" stroke="#2b2622" stroke-width="4"/>
+      <text x="430" y="150" text-anchor="middle" font-size="64" font-weight="900" fill="#e8542f" font-family="ui-monospace,Menlo,monospace">第 12 章</text>
+      <text x="430" y="235" text-anchor="middle" font-size="42" font-weight="900" fill="#2b2622">总结与预告</text>
+      <text x="430" y="300" text-anchor="middle" font-size="20" font-weight="700" fill="#2b2622" opacity=".75">把三十分钟装进口袋</text>
+    </svg>
+    
+    
+  </section>
+  <section class="panel">
+    <span class="ptag">P.70</span>
+    <span class="ptitle">收束站</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f6efdd"/>
+      <g transform="translate(560,120)"><rect width="150" height="96" rx="12" fill="#cdeccf" stroke="#2b2622" stroke-width="3.5"/><circle cx="56" cy="42" r="6" fill="#2b2622"/><circle cx="96" cy="42" r="6" fill="#2b2622"/><path d="M62 64 Q76 74 90 64" stroke="#2b2622" stroke-width="3.5" fill="none"/><rect x="44" y="96" width="62" height="12" fill="#2b2622"/><rect x="20" y="108" width="110" height="12" rx="5" fill="#2b2622"/></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <path d="M46 52 Q54 45 62 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M74 52 Q82 45 90 52" stroke="#2b2622" stroke-width="4" fill="none"/><path d="M52 68 Q68 78 84 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub " style="top:96px; right:400px; left:auto;">压轴总结</div>
+    <div class="narr">最后一站。三十分钟的信息量，压缩成一张行动清单。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.71</span>
+    <span class="ptitle">全片十二站回顾</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>全片十二站回顾</div><ul class="biglist"><li><span class="n">1</span>原理：ID·打洞·中继</li><li><span class="n">2</span>架构：Rust 双端六平台</li><li><span class="n">3</span>自建：两条命令搞定</li><li><span class="n">4</span>商业：开源免费+四档付费</li><li><span class="n">5</span>横评：自建党的隐私胜利</li><li><span class="n">6</span>实战：直连快百倍</li></ul></div>
+    
+    <div class="narr">十二站脉络一张卡。核心一句：免费是它的武器，自建是你的护城河。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.72</span>
+    <span class="ptitle">终极口诀</span>
+    <svg class="scene" viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg">
+      <rect width="860" height="430" fill="#f2ead6"/>
+      <g transform="translate(575,105)"><circle cx="65" cy="75" r="62" fill="#ffd94a" stroke="#2b2622" stroke-width="4"/><text x="65" y="100" text-anchor="middle" font-size="64" font-weight="900" fill="#c23a15">¥</text></g>
+      <g transform="translate(300,110)">
+        <rect x="0" y="40" width="136" height="66" rx="13" fill="#ffe082" stroke="#2b2622" stroke-width="3.5"/>
+        <line x1="26" y1="40" x2="17" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="110" y1="40" x2="119" y2="6" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="17" cy="2" r="4.5" fill="#e8542f"/><circle cx="119" cy="2" r="4.5" fill="#e8542f"/>
+        <circle cx="54" cy="50" r="5.5" fill="#2b2622"/><circle cx="82" cy="50" r="5.5" fill="#2b2622"/><path d="M54 68 Q68 77 82 68" stroke="#2b2622" stroke-width="4" fill="none"/>
+        <line x1="0" y1="58" x2="-20" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <line x1="136" y1="58" x2="156" y2="70" stroke="#2b2622" stroke-width="4" stroke-linecap="round"/>
+        <rect x="28" y="110" width="80" height="20" rx="4" fill="#fff" stroke="#2b2622" stroke-width="2"/>
+        <text x="68" y="125" text-anchor="middle" font-size="13" font-weight="900" fill="#2b2622">RustDesk</text>
+      </g>
+    </svg>
+    <div class="bub tail-r" style="top:96px; left:56px;">白嫖归白嫖，密钥要配好</div>
+    <div class="narr">终极口诀三句：代码随便白嫖，密钥一定配好，能直连绝不过服务器。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.73</span>
+    <span class="ptitle">今天就能做的三件事</span>
+    <div class="cardwrap"><div class="ct"><span class="dot"></span>今天就能做的三件事</div><ul class="biglist"><li><span class="n">1</span>检查客户端 key 与服务器是否配对</li><li><span class="n">2</span>无人值守改强密码或一次一换</li><li><span class="n">3</span>局域网设备统统改 IP 直连</li></ul></div>
+    
+    <div class="narr">三件小事今天就能做：查密钥、换密码、改直连。</div>
+  </section>
+  <section class="panel">
+    <span class="ptag">P.74</span>
+    
+    <div class="cardwrap"><div class="ct"><span class="dot"></span></div><div class="bigcard"><div class="huge">下期预告</div><div class="lab">hbbs 自建保姆级教程</div><div class="sub2">从买服务器到出门在外连回家</div></div></div>
+    
+    <div class="narr">下期：hbbs 自建保姆级教程，从买服务器到外网连回家。</div>
+  </section>
+
+  <div class="factbox">
+    <h3>📌 本页知识清单</h3>
+    <ul>
+      <li>远控四步舞：报 ID → 问路 → 打洞 → 中继兜底；能直连绝不中继。</li>
+      <li>端口速记：21116 信令(TCP+UDP)、21117 中继、21118 IP 直连。</li>
+      <li>技术栈：客户端 Rust+Flutter 六端同源；服务端 hbbs/hbbr 两个轻量程序。</li>
+      <li>自建：Docker 两条命令；三大坑=端口不全、key 不配对、漏 UDP 21116。</li>
+      <li>商业：open-core——免费区大方，付费四档，利润奶牛是定制客户端授权。</li>
+      <li>结论均标注"推测/未证实"者为公开信息合理推断，非官方口径。</li>
+    </ul>
+  </div>
+
+  <footer>—— 开源软件底细系列 · 30 分钟完整版 · 2026-08-30 ——</footer>
+</div></body></html>
