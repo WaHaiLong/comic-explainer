@@ -23,6 +23,7 @@
 ## 在线预览 / Live demos
 
 - 🏠 [门房大叔 192.168.10.1](https://wahailong.github.io/comic-explainer/examples/network-gatekeeper.html) —— 把「路由器是什么」画成小镇故事
+- 🤖 [小比特学做菜 · 自我进化 Agent](https://wahailong.github.io/comic-explainer/examples/cs329a-self-improving-agents.html) —— 把斯坦福 CS329A 讲成「做菜与美食评委」的故事
 - 🧑 [画人能力小样](https://wahailong.github.io/comic-explainer/examples/human-drawing-demo.html) —— Q 版人物图鉴与画风边界自检
 
 （也可直接下载 `examples/*.html` 本地用浏览器打开，完全离线可用。）
@@ -69,6 +70,7 @@ comic-explainer/
 │   └── reference.md            # SVG 素材配方库 + 标签闭合校验脚本
 └── examples/
     ├── network-gatekeeper.html # 第 1 话：路由器 192.168.10.1
+    ├── cs329a-self-improving-agents.html # 第 2 话：斯坦福 CS329A 自我进化 Agent
     └── human-drawing-demo.html # 画人能力小样
 ```
 
